@@ -1,5 +1,6 @@
 from tkinter import *
 from PIL import Image, ImageTk
+from course import CourseClass
 import os
 
 
@@ -52,7 +53,7 @@ class RMS:
             "bd": 2
         }
 
-        Button(menu_frame, text="Course", **btn_style).place(x=20, y=15, width=200, height=40)
+        Button(menu_frame, text="Course", **btn_style,command=self.add_course).place(x=20, y=15, width=200, height=40)
         Button(menu_frame, text="Student", **btn_style).place(x=240, y=15, width=200, height=40)
         Button(menu_frame, text="Result", **btn_style).place(x=460, y=15, width=200, height=40)
         Button(menu_frame, text="View Student Results", **btn_style).place(x=680, y=15, width=220, height=40)
@@ -109,6 +110,12 @@ class RMS:
             fg="white"
         )
         footer.pack(side=BOTTOM, fill=X)
+
+
+    def add_course(self):
+        self.new_win=Toplevel(self.root)
+        self.new_obj=CourseClass(self.new_win)
+
 
 
 # ================= MAIN =================
