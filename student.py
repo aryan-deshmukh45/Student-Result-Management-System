@@ -138,11 +138,11 @@ class StudentClass:
         self.var_roll.set("")
         self.var_name.set("")
         self.var_email.set("")
-        self.var_gender.set("")
+        self.var_gender.set("Select")
         self.var_dob.set("")
         self.var_contact.set("")
         self.var_a_date.set("")
-        self.var_course.set("")
+        self.var_course.set("Select")
         self.var_state.set("")
         self.var_city.set("")
         self.var_pin.set("")
@@ -193,10 +193,6 @@ class StudentClass:
         self.var_pin.set(row[10])
         self.txt_address.delete('1.0', END)
         self.txt_address.insert(END, row[11])
-        
-
-
-
 
     def add(self):
         con=sqlite3.connect(database="rms.db")
@@ -301,11 +297,6 @@ class StudentClass:
                 messagebox.showerror("Error","No record found",parent=self.root)        
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to {str(ex)}")    
-
-
-
-
-
 
 if __name__ == "__main__":
     root = Tk()

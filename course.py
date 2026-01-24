@@ -200,10 +200,6 @@ class CourseClass:
             messagebox.showerror("Error",f"Error due to {str(ex)}")    
 
 
-
-
-
-
 if __name__ == "__main__":
     root = Tk()
     app = CourseClass(root)
