@@ -60,15 +60,14 @@ class StudentClass:
         lbl_course=Label(self.root,text="Course",font=("goudy old style",15,"bold"),bg="white").place(x=360,y=180)
 
         #===Entry Fields====
-        self.course_list=[]
+        self.course_list=["Select", "Python","Laravel","Java"]
         #function_call to update the list
-        self.fetch_course()
         txt_dob=Entry(self.root,textvariable=self.var_dob,font=("goudy old style",15,"bold"),bg="lightyellow").place(x=480,y=60,width=200)
         txt_contact=Entry(self.root,textvariable=self.var_contact,font=("goudy old style",15,"bold"),bg="lightyellow").place(x=480,y=100,width=200)
         txt_admission=Entry(self.root,textvariable=self.var_a_date,font=("goudy old style",15,"bold"),bg="lightyellow").place(x=480,y=140,width=200)
         self.txt_course=ttk.Combobox(self.root,textvariable=self.var_course,values=self.course_list,font=("goudy old style",15,"bold"),state='readonly',justify=CENTER)
         self.txt_course.place(x=480,y=180,width=200)
-        self.txt_course.set("Empty")
+        self.txt_course.current(0)
 
        #======Text Address========
 
