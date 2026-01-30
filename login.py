@@ -3,7 +3,8 @@ from PIL import Image, ImageTk, ImageDraw
 from datetime import datetime
 import math
 import os
-
+import sqlite3
+from tkinter import messagebox
 
 class LoginWindow:
     def __init__(self, root):
@@ -58,7 +59,8 @@ class LoginWindow:
             bg="#c2185b",
             fg="white",
             bd=0,
-            cursor="hand2"
+            cursor="hand2",
+            command=self.login
         ).place(x=80, y=310, width=150, height=40)
 
         Button(
@@ -67,7 +69,8 @@ class LoginWindow:
             font=("ariel",10),
             fg="#B00857",
             bg="white",
-            cursor="hand2"
+            cursor="hand2",
+            command=self.register_window
         ).place(x=80, y=370)
 
         # ===== Clock setup =====
@@ -75,6 +78,36 @@ class LoginWindow:
         self.clock_bg = os.path.join(self.BASE_DIR, "Images", "cl.jpg")
 
         self.update_clock()
+
+    def register_window(self):
+        self.root.destroy()
+        from register import Register
+        root = Tk()
+        Register(root)
+        root.mainloop()
+
+    def login(self):
+        if self.txt_email.get()=="" or self.txt_pass.get()=="":
+            messagebox.showerror("Error","All fields are required",parent=self.root)
+        else:
+            try:
+                con= sqlite3.connect("employee.db")
+                cur = con.cursor()
+                cur.execute("Select *from employee where email=? and password=?",(self.txt_email.get(),self.txt_pass.get()))
+                row=cur.fetchone()
+                if row==None:
+                    messagebox.showerror("Error","Invalid USERNAME & PASSWORD",parent=self.root)
+                else:
+                    messagebox.showinfo("Error","Welcome",parent=self.root)  
+                    self.root.destroy()
+                    from dashboard import RMS
+                    root = Tk()
+                    RMS(root)
+                    root.mainloop()
+                con.close()      
+            except Exception as es:
+                messagebox.showerror("Error",f"Error Due to : {str(es)}",parent=self.root)        
+            
 
     # ===== Clock Drawing =====
     def draw_clock(self, hr, min_, sec_):
