@@ -5,7 +5,8 @@ from student import StudentClass
 from result import ResultClass
 from report import ReportClass
 import os
-
+import sqlite3
+from tkinter import messagebox
 
 class RMS:
     def __init__(self, root):
@@ -60,8 +61,8 @@ class RMS:
         Button(menu_frame, text="Student", **btn_style,command=self.add_student).place(x=240, y=15, width=200, height=40)
         Button(menu_frame, text="Result", **btn_style,command=self.add_result).place(x=460, y=15, width=200, height=40)
         Button(menu_frame, text="View Student Results", **btn_style,command=self.add_report).place(x=680, y=15, width=220, height=40)
-        Button(menu_frame, text="Logout", **btn_style).place(x=920, y=15, width=180, height=40)
-        Button(menu_frame, text="Exit", **btn_style, command=self.root.destroy).place(x=1120, y=15, width=180, height=40)
+        Button(menu_frame, text="Logout", **btn_style,command=self.logout).place(x=920, y=15, width=180, height=40)
+        Button(menu_frame, text="Exit", **btn_style, command=self.exit_).place(x=1120, y=15, width=180, height=40)
 
         # ================= BACKGROUND IMAGE =================
         bg_path = os.path.join(BASE_DIR, "Images", "bg.png")
@@ -83,26 +84,29 @@ class RMS:
             "fg": "white"
         }
 
-        Label(
+        self.lbl_course=Label(
             self.root,
             text="Total Courses\n[ 0 ]",
             bg="#e74c3c",
             **box_style
-        ).place(x=420, y=560, width=280, height=100)
+        )
+        self.lbl_course.place(x=420, y=560, width=280, height=100)
 
-        Label(
+        self.lbl_student=Label(
             self.root,
             text="Total Students\n[ 0 ]",
             bg="#2980b9",
             **box_style
-        ).place(x=720, y=560, width=280, height=100)
+        )
+        self.lbl_student.place(x=720, y=560, width=280, height=100)
 
-        Label(
+        self.lbl_result=Label(
             self.root,
             text="Total Results\n[ 0 ]",
             bg="#16a085",
             **box_style
-        ).place(x=1020, y=560, width=280, height=100)
+        )
+        self.lbl_result.place(x=1020, y=560, width=280, height=100)
 
         # ================= FOOTER =================
         footer = Label(
@@ -113,6 +117,27 @@ class RMS:
             fg="white"
         )
         footer.pack(side=BOTTOM, fill=X)
+        self.update_details()
+
+    def update_details(self):
+        con=sqlite3.connect(database="rms.db")
+        cur=con.cursor()
+        try:
+            cur.execute("select *from course")
+            cr=cur.fetchall()
+            self.lbl_course.config(text=f"Total courses\n[{str(len(cr))}]")
+
+            cur.execute("select *from student")
+            cr=cur.fetchall()
+            self.lbl_student.config(text=f"Total Student\n[{str(len(cr))}]")
+
+            cur.execute("select *from result")
+            cr=cur.fetchall()
+            self.lbl_result.config(text=f"Total Result\n[{str(len(cr))}]")
+        except Exception as ex:
+            messagebox.showerror("Error",f"Error due to {str(ex)}") 
+        self.root.after(200,self.update_details)    
+
 
 
     def add_course(self):
@@ -130,8 +155,19 @@ class RMS:
     def add_report(self):
         self.new_win=Toplevel(self.root)
         self.new_obj=ReportClass(self.new_win)
-    
 
+    def logout(self):
+        op=messagebox.askyesno("Confirm","Do you really want to logout?",parent=self.root)  
+        if op==True:
+            self.root.destroy()
+            from login import LoginWindow
+            root = Tk()
+            LoginWindow(root)
+            root.mainloop()
+    def exit_(self):
+        op=messagebox.askyesno("Confirm","Do you really want to Exit?",parent=self.root)  
+        if op==True:
+            self.root.destroy()
 
 
 # ================= MAIN =================

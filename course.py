@@ -109,22 +109,22 @@ class CourseClass:
             
 
 
-    def get_data(self,ev):
+    def get_data(self, ev):
+        r = self.courseTable.focus()
+        if not r:
+            return  # nothing selected
+        content = self.courseTable.item(r)
+        row = content.get("values", [])
+
+        if len(row) < 5:
+            return
+    
         self.txt_courseName.config(state='readonly')
-        self.txt_courseName
-        r=self.courseTable.focus()
-        content=self.courseTable.item(r)
-        row=content["values"]
-        # print(row)
         self.var_course.set(row[1])
         self.var_duration.set(row[2])
         self.var_charges.set(row[3])
-        # self.var_course.set(row[4])
-        self.txt_description.delete('1.0',END)
-        self.txt_description.insert(END,row[4])
-        
-
-
+        self.txt_description.delete('1.0', END)
+        self.txt_description.insert(END, row[4])
 
 
     def add(self):

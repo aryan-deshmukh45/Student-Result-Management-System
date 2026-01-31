@@ -183,7 +183,7 @@ class LoginWindow:
                 if row==None:
                     messagebox.showerror("Error","Invalid USERNAME & PASSWORD",parent=self.root)
                 else:
-                    messagebox.showinfo("Error","Welcome",parent=self.root)  
+                    messagebox.showinfo("Error",f"Welcome : {self.txt_email.get()}",parent=self.root)  
                     self.root.destroy()
                     from dashboard import RMS
                     root = Tk()

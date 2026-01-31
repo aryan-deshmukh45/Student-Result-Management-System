@@ -189,6 +189,7 @@ class Register:
                 con.close()
                 messagebox.showinfo("Success", "Registration Successful", parent=self.root)
                 self.clear()
+                self.login_window()
 
         except Exception as e:
             messagebox.showerror("Error", f"Error: {e}", parent=self.root)
