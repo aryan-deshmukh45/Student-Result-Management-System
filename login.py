@@ -4,7 +4,7 @@ from datetime import datetime
 import math
 import os
 import sqlite3
-from tkinter import messagebox
+from tkinter import messagebox,ttk
 
 class LoginWindow:
     def __init__(self, root):
@@ -72,12 +72,97 @@ class LoginWindow:
             cursor="hand2",
             command=self.register_window
         ).place(x=80, y=370)
+        Button(
+            right_frame,
+            text="Forget Password ?",
+            font=("ariel",10),
+            fg="red",
+            bg="white",
+            cursor="hand2",
+            command=self.forget_password_window
+        ).place(x=240, y=370)
 
         # ===== Clock setup =====
         self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         self.clock_bg = os.path.join(self.BASE_DIR, "Images", "cl.jpg")
 
         self.update_clock()
+
+    def reset(self):
+        self.cmb_quest.current(0)
+        self.txt_new_pss.delete(0,END)
+        self.txt_answer.delete(0,END)
+        self.txt_pass.delete(0,END)
+        self.txt_email.delete(0,END)
+
+
+    def forget_password(self):
+        if self.cmb_quest.get()=="Select" or self.txt_answer.get()=="" or self.txt_new_pss.get()=="":
+            messagebox.showerror("Error","All fields are required",parent=self.root2)
+        else:
+            try:
+                con= sqlite3.connect("employee.db")
+                cur = con.cursor()
+                cur.execute("Select *from employee where email=? and question=? and answer=?",(self.txt_email.get(),self.cmb_quest.get(),self.txt_answer.get()))
+                row=cur.fetchone()
+                if row==None:
+                    messagebox.showerror("Error","Please Select the Correct Security Question / Enter Answer",parent=self.root2)
+                else:
+                    cur.execute("update employee set password=? where email=?",(self.txt_new_pss.get(),self.txt_email.get()))
+                    con.commit()
+                    con.close()
+                    messagebox.showinfo("Success","your password has been reset, Please login with new password",parent=self.root2)
+                    self.reset()
+                    self.root2.destroy()
+            except Exception as es:
+                messagebox.showerror("Error",f"Error Due to : {str(es)}",parent=self.root)
+
+    def forget_password_window(self):
+        if self.txt_email.get()=="":
+            messagebox.showerror("Error","Please enter the email address to reset the password",parent=self.root)
+        else:
+            try:
+                con= sqlite3.connect("employee.db")
+                cur = con.cursor()
+                cur.execute("Select *from employee where email=?",(self.txt_email.get(),))
+                row=cur.fetchone()
+                if row==None:
+                    messagebox.showerror("Error","Please enter the valid email address to reset the password",parent=self.root)
+                else:
+                    con.close() 
+                    self.root2=Toplevel()  
+                    self.root2.title("Forget Password") 
+                    self.root2.geometry("350x400+495+150") 
+                    self.root2.config(bg="white")
+                    self.root2.focus_force()
+                    self.root2.grab_set()
+            
+                    t=Label(self.root2,text="Forget Password",font=("times new roman",20,"bold"),bg="white",fg="red").place(x=0,y=10,relwidth=1)
+            
+                    Label(self.root2, text="Security Question", bg="white").place(x=50, y=100)
+                    self.cmb_quest = ttk.Combobox(self.root2, state="readonly")
+                    self.cmb_quest["values"] = (
+                        "Select",
+                        "Your First Pet Name",
+                        "Your Birth Place",
+                        "Your Best Friend Name"
+                    )
+                    self.cmb_quest.current(0)
+                    self.cmb_quest.place(x=50, y=130, width=250)
+            
+                    Label(self.root2, text="Answer", bg="white").place(x=50, y=180)
+                    self.txt_answer = Entry(self.root2, bg="lightgray")
+                    self.txt_answer.place(x=50, y=210, width=250)
+            
+                    Label(self.root2, text="New Password", bg="white").place(x=50, y=260)
+                    self.txt_new_pss = Entry(self.root2, bg="lightgray")
+                    self.txt_new_pss.place(x=50, y=290, width=250)
+            
+                    btn_change_password=Button(self.root2,text="Reset Password",command=self.forget_password,bg="green",fg="white",font=("times new roman",15,"bold")).place(x=90,y=340)     
+            except Exception as es:
+                messagebox.showerror("Error",f"Error Due to : {str(es)}",parent=self.root)
+
+        
 
     def register_window(self):
         self.root.destroy()
